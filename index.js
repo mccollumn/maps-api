@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const run = require('./db')
+const { run, insertOne } = require('./db')
 const app = express()
 const port = 3001
 
@@ -14,9 +14,14 @@ app.get('/', async (req, res) => {
   res.send('Goodbye World!')
 })
 
-app.post('/locationData', (req, res) => {
+app.post('/locationData', async (req, res) => {
+  const dbRes = await insertOne(req.body, "locations") || {}
   console.log(req.body)
-  res.send('Success')
+  console.log("DB Response:", dbRes)
+  res.send({
+    insertedCount: dbRes.insertedCount,
+    result: dbRes.ops
+  })
 })
 
 app.listen(port, () => {
