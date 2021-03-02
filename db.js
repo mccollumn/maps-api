@@ -54,4 +54,26 @@ async function insertOne(payload, collectionName) {
     }
 }
 
-module.exports = { run, insertOne };
+async function retrieveAll(collectionName) {
+    try {
+        await client.connect();
+        console.log("Connected correctly to server");
+        const db = client.db(dbName);
+        const col = db.collection(collectionName);
+
+        //return await col.find({});
+        const cursor = col.find({})
+        let results = []
+        for await (const doc of cursor) {
+            results.push(doc)
+        }
+        return results;
+    } catch (err) {
+        console.log(err.stack);
+    }
+    finally {
+        await client.close();
+    }
+}
+
+module.exports = { run, insertOne, retrieveAll };

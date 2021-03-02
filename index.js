@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const { run, insertOne } = require('./db')
+const { run, insertOne, retrieveAll } = require('./db')
 const app = express()
 const port = 3001
 
@@ -22,6 +22,14 @@ app.post('/locationData', async (req, res) => {
     insertedCount: dbRes.insertedCount,
     result: dbRes.ops
   })
+})
+
+app.get('/locationData', async (req, res) => {
+  const dbRes = await retrieveAll("locations")
+  console.log("DB Response:", dbRes)
+  res.send(
+    { data: dbRes }
+  )
 })
 
 app.listen(port, () => {
